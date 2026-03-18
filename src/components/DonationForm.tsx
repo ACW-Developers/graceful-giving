@@ -53,13 +53,29 @@ const DonationForm = () => {
 
     setIsProcessing(true);
 
-    // Simulate payment processing (Stripe integration placeholder)
-    // In production, this would call a Stripe checkout session endpoint
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    try {
+      const { data, error } = await supabase.functions.invoke("create-donation", {
+        body: {
+          amount: donationAmount,
+          name: name.trim(),
+          email: email.trim(),
+          message: message.trim(),
+        },
+      });
 
-    setIsProcessing(false);
-    setIsDone(true);
-    toast.success("Thank you for your generous donation!");
+      if (error) throw error;
+      if (data?.url) {
+        window.open(data.url, "_blank");
+        setIsDone(true);
+        toast.success("Redirecting to secure payment...");
+      } else {
+        throw new Error("No checkout URL received");
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Payment failed. Please try again.");
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   if (isDone) {
