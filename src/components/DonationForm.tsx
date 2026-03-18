@@ -234,21 +234,16 @@ const DonationForm = () => {
           </div>
 
           {/* Payment Section Placeholder */}
-          <div className="mb-8 p-6 rounded-xl border-2 border-dashed border-border bg-surface/50">
-            <div className="flex items-center gap-2 mb-3">
+          <div className="mb-8 p-6 rounded-xl border border-border bg-surface/50">
+            <div className="flex items-center gap-2 mb-2">
               <Shield className="w-5 h-5 text-secondary" />
               <span className="font-body font-semibold text-foreground text-sm">
                 Secure Payment via Stripe
               </span>
             </div>
             <p className="font-body text-sm text-muted-foreground">
-              Card payment will be processed securely through Stripe. Your payment details are encrypted and never stored on our servers.
+              You'll be redirected to Stripe's secure checkout to complete your payment. Your card details are never stored on our servers.
             </p>
-            <div className="mt-4 p-4 rounded-lg bg-muted/50">
-              <p className="font-body text-xs text-muted-foreground text-center">
-                Stripe payment integration ready — connect your Stripe secret key to enable live payments.
-              </p>
-            </div>
           </div>
 
           {/* Submit */}
