@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Heart, Shield, CheckCircle, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 import futuresLogo from "@/assets/5000-futures-logo.png";
 
 const tiers = [
