@@ -3,21 +3,21 @@ import { Mail, MapPin, Heart } from "lucide-react";
 
 const ContactPage = () => {
   return (
-    <div className="p-6 md:p-8 max-w-3xl mx-auto space-y-8">
+    <div className="p-4 sm:p-6 md:p-8 max-w-3xl mx-auto space-y-6 sm:space-y-8">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-2">Contact Us</h1>
-        <p className="font-body text-muted-foreground text-base">
+        <h1 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-2">Contact Us</h1>
+        <p className="font-body text-muted-foreground text-sm sm:text-base">
           Get in touch with the Unashamed Charity team.
         </p>
       </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
         <motion.div
-          className="bg-background rounded-xl p-6 border border-border shadow-sm"
+          className="bg-card rounded-xl p-5 sm:p-6 border border-border shadow-sm"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
@@ -32,7 +32,7 @@ const ContactPage = () => {
         </motion.div>
 
         <motion.div
-          className="bg-background rounded-xl p-6 border border-border shadow-sm"
+          className="bg-card rounded-xl p-5 sm:p-6 border border-border shadow-sm"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
@@ -46,13 +46,13 @@ const ContactPage = () => {
       </div>
 
       <motion.div
-        className="bg-secondary/5 rounded-xl p-8 border border-secondary/10 text-center"
+        className="bg-secondary/5 rounded-xl p-6 sm:p-8 border border-secondary/10 text-center"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.4 }}
       >
         <Heart className="w-8 h-8 text-secondary mx-auto mb-3" />
-        <p className="font-body text-sm text-muted-foreground max-w-md mx-auto">
+        <p className="font-body text-xs sm:text-sm text-muted-foreground max-w-md mx-auto">
           Interested in partnering, volunteering, or learning more about our work? We'd love to hear from you.
         </p>
       </motion.div>

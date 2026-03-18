@@ -34,43 +34,43 @@ const impacts = [
 
 const ImpactPage = () => {
   return (
-    <div className="p-6 md:p-8 max-w-6xl mx-auto space-y-8">
+    <div className="p-4 sm:p-6 md:p-8 max-w-6xl mx-auto space-y-6 sm:space-y-8">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-2">Our Impact</h1>
-        <p className="font-body text-muted-foreground text-base">
+        <h1 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-2">Our Impact</h1>
+        <p className="font-body text-muted-foreground text-sm sm:text-base">
           Every contribution directly impacts lives across four key program areas.
         </p>
       </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
         {impacts.map((impact, i) => (
           <motion.div
             key={impact.title}
-            className="group bg-background rounded-xl overflow-hidden border border-border shadow-sm hover:shadow-lg transition-shadow duration-300"
+            className="group bg-card rounded-xl overflow-hidden border border-border shadow-sm hover:shadow-lg transition-shadow duration-300"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 + i * 0.1 }}
           >
-            <div className="relative h-48 overflow-hidden">
+            <div className="relative h-40 sm:h-48 overflow-hidden">
               <img
                 src={impact.image}
                 alt={impact.title}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-primary/70 to-transparent" />
-              <div className="absolute bottom-4 left-4 flex items-center gap-2">
-                <div className="w-9 h-9 rounded-full bg-secondary flex items-center justify-center">
-                  <impact.icon className="w-4 h-4 text-secondary-foreground" />
+              <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 flex items-center gap-2">
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-secondary flex items-center justify-center">
+                  <impact.icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-secondary-foreground" />
                 </div>
-                <h3 className="font-display text-lg font-semibold text-primary-foreground">{impact.title}</h3>
+                <h3 className="font-display text-base sm:text-lg font-semibold text-white">{impact.title}</h3>
               </div>
             </div>
-            <div className="p-5">
-              <p className="font-body text-sm text-muted-foreground leading-relaxed">{impact.description}</p>
+            <div className="p-4 sm:p-5">
+              <p className="font-body text-xs sm:text-sm text-muted-foreground leading-relaxed">{impact.description}</p>
             </div>
           </motion.div>
         ))}
