@@ -1,0 +1,105 @@
+import { Heart, Target, Sparkles, Info, LayoutDashboard, Mail } from "lucide-react";
+import { NavLink } from "@/components/NavLink";
+import { useLocation } from "react-router-dom";
+import futuresLogo from "@/assets/5000-futures-logo.png";
+import logo from "@/assets/logo.png";
+
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarFooter,
+  useSidebar,
+} from "@/components/ui/sidebar";
+
+const menuItems = [
+  { title: "Dashboard", url: "/", icon: LayoutDashboard },
+  { title: "Donate", url: "/donate", icon: Heart },
+  { title: "Our Mission", url: "/mission", icon: Target },
+  { title: "Our Impact", url: "/impact", icon: Sparkles },
+  { title: "About Us", url: "/about", icon: Info },
+  { title: "Contact", url: "/contact", icon: Mail },
+];
+
+export function AppSidebar() {
+  const { state } = useSidebar();
+  const collapsed = state === "collapsed";
+  const location = useLocation();
+
+  return (
+    <Sidebar collapsible="icon" className="border-r border-sidebar-border">
+      <SidebarHeader className="p-4">
+        <div className="flex items-center gap-3">
+          <img
+            src={futuresLogo}
+            alt="5000 Futures"
+            className="w-10 h-10 rounded-lg object-contain flex-shrink-0"
+          />
+          {!collapsed && (
+            <div className="flex flex-col min-w-0">
+              <span className="font-display text-sm font-bold text-sidebar-foreground truncate">
+                5,000 Futures
+              </span>
+              <span className="text-[10px] text-sidebar-foreground/60 font-body truncate">
+                Refugee Empowerment
+              </span>
+            </div>
+          )}
+        </div>
+      </SidebarHeader>
+
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {menuItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={location.pathname === item.url}
+                    tooltip={item.title}
+                  >
+                    <NavLink
+                      to={item.url}
+                      end
+                      className="hover:bg-sidebar-accent/50"
+                      activeClassName="bg-secondary/10 text-secondary font-semibold"
+                    >
+                      <item.icon className="h-4 w-4" />
+                      {!collapsed && <span>{item.title}</span>}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+
+      <SidebarFooter className="p-4">
+        <div className="flex items-center gap-2">
+          <img
+            src={logo}
+            alt="Unashamed Charity"
+            className="w-8 h-8 rounded-full object-contain flex-shrink-0"
+          />
+          {!collapsed && (
+            <div className="flex flex-col min-w-0">
+              <span className="text-[11px] font-body font-medium text-sidebar-foreground/80 truncate">
+                Unashamed Charity
+              </span>
+              <span className="text-[10px] text-sidebar-foreground/50 font-body italic truncate">
+                Our Kindness, Someone's Hope
+              </span>
+            </div>
+          )}
+        </div>
+      </SidebarFooter>
+    </Sidebar>
+  );
+}
