@@ -6,13 +6,13 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 131 93% 86%;
     --foreground: 222 47% 11%;
 
-    --card: 210 40% 98%;
+    --card: 131 93% 90%;
     --card-foreground: 222 47% 11%;
 
-    --popover: 0 0% 100%;
+    --popover: 131 93% 92%;
     --popover-foreground: 222 47% 11%;
 
     --primary: 234 55% 30%;
@@ -24,19 +24,19 @@
     --accent: 43 96% 56%;
     --accent-foreground: 222 47% 11%;
 
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 131 40% 82%;
+    --muted-foreground: 215 16% 37%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
+    --border: 131 30% 78%;
+    --input: 131 30% 78%;
     --ring: 234 55% 30%;
 
     --radius: 0.75rem;
 
-    --surface: 210 33% 98%;
+    --surface: 131 60% 88%;
 
     --sidebar-background: 234 55% 22%;
     --sidebar-foreground: 0 0% 95%;
@@ -50,12 +50,12 @@
 
   .dark {
     --background: 222 47% 11%;
-    --foreground: 210 40% 98%;
-    --card: 222 47% 11%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222 47% 11%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
+    --foreground: 131 93% 90%;
+    --card: 222 40% 14%;
+    --card-foreground: 131 93% 90%;
+    --popover: 222 40% 14%;
+    --popover-foreground: 131 93% 90%;
+    --primary: 131 93% 86%;
     --primary-foreground: 222 47% 11%;
     --secondary: 145 63% 32%;
     --secondary-foreground: 0 0% 100%;
@@ -65,13 +65,13 @@
     --accent-foreground: 222 47% 11%;
     --destructive: 0 63% 31%;
     --destructive-foreground: 210 40% 98%;
-    --border: 217 33% 18%;
-    --input: 217 33% 18%;
-    --ring: 213 27% 84%;
+    --border: 217 33% 22%;
+    --input: 217 33% 22%;
+    --ring: 131 93% 86%;
     --surface: 217 33% 14%;
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary: 145 63% 50%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 240 3.7% 15.9%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
@@ -97,5 +97,11 @@
 @layer utilities {
   .text-gradient {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary;
+  }
+}
+
+@media print {
+  .no-print {
+    display: none !important;
   }
 }
