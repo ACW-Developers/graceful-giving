@@ -1,4 +1,4 @@
-import { Heart, Target, Sparkles, Info, LayoutDashboard, Mail, ShieldCheck } from "lucide-react";
+import { Heart, Target, Sparkles, Info, LayoutDashboard, Mail } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
 import futuresLogo from "@/assets/5000-futures-logo.png";
@@ -35,9 +35,11 @@ export function AppSidebar() {
     <Sidebar collapsible="icon" className="border-r border-sidebar-border">
       <SidebarHeader className="p-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-white flex items-center justify-center flex-shrink-0 p-1">
-            <img src={futuresLogo} alt="5000 Futures" className="w-full h-full object-contain" />
-          </div>
+          <img
+            src={futuresLogo}
+            alt="5000 Futures"
+            className="w-10 h-10 rounded-lg object-contain flex-shrink-0"
+          />
           {!collapsed && (
             <div className="flex flex-col min-w-0">
               <span className="font-display text-sm font-bold text-sidebar-foreground truncate">
@@ -79,18 +81,13 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="p-4 space-y-3">
-        <a
-          href="/admin/login"
-          className="flex items-center gap-2 px-3 py-2 rounded-lg text-sidebar-foreground/60 hover:bg-sidebar-accent/50 font-body text-xs transition-colors"
-        >
-          <ShieldCheck className="h-3.5 w-3.5" />
-          {!collapsed && <span>Admin Login</span>}
-        </a>
+      <SidebarFooter className="p-4">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center flex-shrink-0 p-0.5">
-            <img src={logo} alt="Unashamed Charity" className="w-full h-full rounded-full object-contain" />
-          </div>
+          <img
+            src={logo}
+            alt="Unashamed Charity"
+            className="w-8 h-8 rounded-full object-contain flex-shrink-0"
+          />
           {!collapsed && (
             <div className="flex flex-col min-w-0">
               <span className="text-[11px] font-body font-medium text-sidebar-foreground/80 truncate">
