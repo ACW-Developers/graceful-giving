@@ -3,7 +3,11 @@ import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Navigate } from "react-router-dom";
-import { Download, Search } from "lucide-react";
+import { Search, Hash, DollarSign, TrendingUp } from "lucide-react";
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  AreaChart, Area,
+} from "recharts";
 
 const AdminDonations = () => {
   const { isAdmin, loading: authLoading } = useAuth();
@@ -12,13 +16,28 @@ const AdminDonations = () => {
 
   useEffect(() => {
     if (!isAdmin) return;
-    supabase
-      .from("donations")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .then(({ data }) => {
-        if (data) setDonations(data);
-      });
+
+    const fetchDonations = () => {
+      supabase
+        .from("donations")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .then(({ data }) => {
+          if (data) setDonations(data);
+        });
+    };
+
+    fetchDonations();
+
+    // Realtime
+    const channel = supabase
+      .channel("donations-realtime")
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "donations" }, (payload) => {
+        setDonations((prev) => [payload.new as any, ...prev]);
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
   }, [isAdmin]);
 
   if (authLoading) return null;
@@ -30,13 +49,70 @@ const AdminDonations = () => {
       d.donor_email.toLowerCase().includes(search.toLowerCase())
   );
 
+  const totalAmount = donations.reduce((s, d) => s + Number(d.amount), 0);
+  const avgAmount = donations.length > 0 ? Math.round(totalAmount / donations.length) : 0;
+
+  // Chart data: donations by day
+  const byDay: Record<string, { count: number; amount: number }> = {};
+  donations.forEach((d) => {
+    const day = new Date(d.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+    if (!byDay[day]) byDay[day] = { count: 0, amount: 0 };
+    byDay[day].count += 1;
+    byDay[day].amount += Number(d.amount);
+  });
+  const chartData = Object.entries(byDay).reverse().map(([day, v]) => ({ day, ...v }));
+
   return (
     <div className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto space-y-6">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
         <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground">Donations</h1>
-        <p className="font-body text-sm text-muted-foreground">All donation records</p>
+        <p className="font-body text-sm text-muted-foreground">Real-time donation records and analytics</p>
       </motion.div>
 
+      {/* Summary Stats */}
+      <div className="grid grid-cols-3 gap-3 sm:gap-4">
+        {[
+          { label: "Total Donations", value: donations.length, icon: Hash, color: "text-primary" },
+          { label: "Total Amount", value: `$${totalAmount.toLocaleString()}`, icon: DollarSign, color: "text-secondary" },
+          { label: "Avg Donation", value: `$${avgAmount}`, icon: TrendingUp, color: "text-accent-foreground" },
+        ].map((stat) => (
+          <motion.div
+            key={stat.label}
+            className="bg-card rounded-xl p-4 border border-border shadow-sm"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+          >
+            <div className="flex items-center gap-2 mb-1">
+              <stat.icon className={`w-4 h-4 ${stat.color}`} />
+              <span className="font-body text-xs text-muted-foreground">{stat.label}</span>
+            </div>
+            <div className="font-display text-xl font-bold text-foreground">{stat.value}</div>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Donation Trend Chart */}
+      {chartData.length > 0 && (
+        <motion.div
+          className="bg-card rounded-xl p-5 border border-border shadow-sm"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          <h2 className="font-display text-base font-bold text-foreground mb-3">Donation Trend</h2>
+          <ResponsiveContainer width="100%" height={200}>
+            <AreaChart data={chartData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+              <XAxis dataKey="day" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
+              <YAxis tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
+              <Tooltip />
+              <Area type="monotone" dataKey="amount" stroke="hsl(142, 76%, 36%)" fill="hsl(142, 76%, 36%)" fillOpacity={0.2} />
+            </AreaChart>
+          </ResponsiveContainer>
+        </motion.div>
+      )}
+
+      {/* Search */}
       <div className="flex items-center gap-3">
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -49,6 +125,7 @@ const AdminDonations = () => {
         </div>
       </div>
 
+      {/* Table */}
       <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">

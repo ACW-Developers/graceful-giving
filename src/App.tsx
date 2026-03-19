@@ -17,6 +17,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminDonations from "./pages/AdminDonations";
 import AdminCampaign from "./pages/AdminCampaign";
 import AdminActivity from "./pages/AdminActivity";
+import AdminReceipts from "./pages/AdminReceipts";
 import DonationSuccess from "./pages/DonationSuccess";
 import NotFound from "./pages/NotFound";
 
@@ -43,6 +44,7 @@ const App = () => (
                 <Route path="/admin/donations" element={<AdminDonations />} />
                 <Route path="/admin/campaign" element={<AdminCampaign />} />
                 <Route path="/admin/activity" element={<AdminActivity />} />
+                <Route path="/admin/receipts" element={<AdminReceipts />} />
               </Route>
               <Route path="/donation-success" element={<DonationSuccess />} />
               <Route path="*" element={<NotFound />} />

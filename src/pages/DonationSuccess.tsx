@@ -1,16 +1,20 @@
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { CheckCircle, Heart, Printer, Download } from "lucide-react";
+import { CheckCircle, Heart, Printer, Loader2 } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
 import futuresLogo from "@/assets/5000-futures-logo.png";
 
 const DonationSuccess = () => {
   const [params] = useSearchParams();
   const receiptRef = useRef<HTMLDivElement>(null);
+  const [loading, setLoading] = useState(true);
+  const [donorName, setDonorName] = useState("Generous Donor");
+  const [amount, setAmount] = useState("—");
+  const [donorEmail, setDonorEmail] = useState("");
 
-  const amount = params.get("amount") || "—";
-  const name = params.get("name") || "Generous Donor";
+  const sessionId = params.get("session_id");
   const date = new Date().toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
@@ -18,9 +22,36 @@ const DonationSuccess = () => {
   });
   const receiptNo = `UCO-${Date.now().toString(36).toUpperCase()}`;
 
-  const handlePrint = () => {
-    window.print();
-  };
+  useEffect(() => {
+    if (!sessionId) {
+      // Fallback to URL params
+      setDonorName(params.get("name") || "Generous Donor");
+      setAmount(params.get("amount") || "—");
+      setLoading(false);
+      return;
+    }
+
+    supabase.functions
+      .invoke("verify-donation", { body: { session_id: sessionId } })
+      .then(({ data, error }) => {
+        if (data && !error) {
+          setDonorName(data.name || "Generous Donor");
+          setAmount(String(data.amount || "—"));
+          setDonorEmail(data.email || "");
+        }
+        setLoading(false);
+      });
+  }, [sessionId]);
+
+  const handlePrint = () => window.print();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-secondary" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-4 py-8">
@@ -30,9 +61,7 @@ const DonationSuccess = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
-        {/* Receipt Card */}
         <div ref={receiptRef} className="bg-card rounded-2xl border border-border shadow-lg overflow-hidden">
-          {/* Header */}
           <div className="bg-primary text-primary-foreground p-6 text-center">
             <div className="flex items-center justify-center gap-3 mb-3">
               <div className="w-10 h-10 bg-white rounded-lg p-1">
@@ -46,16 +75,14 @@ const DonationSuccess = () => {
             <p className="font-body text-xs text-primary-foreground/70 mt-1">5,000 Futures Initiative</p>
           </div>
 
-          {/* Success Icon */}
           <div className="flex justify-center -mt-6">
             <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center shadow-md">
               <CheckCircle className="w-6 h-6 text-secondary-foreground" />
             </div>
           </div>
 
-          {/* Content */}
           <div className="p-6 space-y-5">
-            <p className="text-center font-display text-lg font-bold text-foreground">Thank You, {name}!</p>
+            <p className="text-center font-display text-lg font-bold text-foreground">Thank You, {donorName}!</p>
 
             <div className="bg-background rounded-xl p-4 space-y-3">
               <div className="flex justify-between font-body text-sm">
@@ -68,8 +95,14 @@ const DonationSuccess = () => {
               </div>
               <div className="flex justify-between font-body text-sm">
                 <span className="text-muted-foreground">Donor</span>
-                <span className="font-medium text-foreground">{name}</span>
+                <span className="font-medium text-foreground">{donorName}</span>
               </div>
+              {donorEmail && (
+                <div className="flex justify-between font-body text-sm">
+                  <span className="text-muted-foreground">Email</span>
+                  <span className="font-medium text-foreground">{donorEmail}</span>
+                </div>
+              )}
               <div className="border-t border-border pt-3 flex justify-between font-body">
                 <span className="text-muted-foreground font-medium">Amount</span>
                 <span className="font-display text-xl font-bold text-secondary">${amount}</span>
@@ -93,7 +126,6 @@ const DonationSuccess = () => {
           </div>
         </div>
 
-        {/* Actions (hidden in print) */}
         <div className="flex flex-col sm:flex-row items-center gap-3 mt-6 no-print">
           <button
             onClick={handlePrint}
