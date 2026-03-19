@@ -17,6 +17,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminDonations from "./pages/AdminDonations";
 import AdminCampaign from "./pages/AdminCampaign";
 import AdminActivity from "./pages/AdminActivity";
+import AdminReceipts from "./pages/AdminReceipts";
 import DonationSuccess from "./pages/DonationSuccess";
 import NotFound from "./pages/NotFound";
 
