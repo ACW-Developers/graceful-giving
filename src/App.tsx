@@ -44,6 +44,7 @@ const App = () => (
                 <Route path="/admin/donations" element={<AdminDonations />} />
                 <Route path="/admin/campaign" element={<AdminCampaign />} />
                 <Route path="/admin/activity" element={<AdminActivity />} />
+                <Route path="/admin/receipts" element={<AdminReceipts />} />
               </Route>
               <Route path="/donation-success" element={<DonationSuccess />} />
               <Route path="*" element={<NotFound />} />

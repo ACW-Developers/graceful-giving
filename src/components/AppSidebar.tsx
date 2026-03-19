@@ -34,6 +34,7 @@ const adminItems = [
   { title: "Donations", url: "/admin/donations", icon: BarChart3 },
   { title: "Campaign Settings", url: "/admin/campaign", icon: Settings },
   { title: "Activity Logs", url: "/admin/activity", icon: Activity },
+  { title: "Receipts", url: "/admin/receipts", icon: Receipt },
 ];
 
 export function AppSidebar() {
