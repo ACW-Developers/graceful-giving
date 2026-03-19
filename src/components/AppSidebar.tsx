@@ -1,4 +1,4 @@
-import { Heart, Target, Sparkles, Info, LayoutDashboard, Mail, Shield, BarChart3, Settings, Activity } from "lucide-react";
+import { Heart, Target, Sparkles, Info, LayoutDashboard, Mail, Shield, BarChart3, Settings, Activity, Receipt } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
