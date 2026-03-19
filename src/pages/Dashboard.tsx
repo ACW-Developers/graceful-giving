@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, Users, MapPin, Target, TrendingUp, ArrowRight } from "lucide-react";
+import { Heart, Users, MapPin, Target, TrendingUp, ArrowRight, RefreshCw } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useCampaignSettings } from "@/hooks/useCampaignSettings";
 import futuresLogo from "@/assets/5000-futures-logo.png";
@@ -16,8 +16,9 @@ const logos = [
 ];
 
 const Dashboard = () => {
-  const { campaign, loading } = useCampaignSettings();
+  const { campaign, loading, refetch } = useCampaignSettings();
   const [logoIndex, setLogoIndex] = useState(0);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -25,6 +26,12 @@ const Dashboard = () => {
     }, 3000);
     return () => clearInterval(interval);
   }, []);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await refetch();
+    setTimeout(() => setRefreshing(false), 600);
+  };
 
   const percentage = campaign.goal_amount > 0
     ? Math.round((campaign.raised_amount / campaign.goal_amount) * 100)
@@ -113,7 +120,16 @@ const Dashboard = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.5 }}
         >
-          <h2 className="font-display text-lg font-bold text-foreground mb-4">Campaign Progress</h2>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="font-display text-lg font-bold text-foreground">Campaign Progress</h2>
+            <button
+              onClick={handleRefresh}
+              className="p-2 rounded-lg hover:bg-muted transition-colors"
+              title="Refresh stats"
+            >
+              <RefreshCw className={`w-4 h-4 text-muted-foreground ${refreshing ? "animate-spin" : ""}`} />
+            </button>
+          </div>
           <div className="space-y-4">
             <div>
               <div className="flex justify-between font-body text-sm mb-2">
@@ -178,7 +194,7 @@ const Dashboard = () => {
         </motion.div>
       </div>
 
-      {/* Founder Section - Image Left, Content Right */}
+      {/* Founder Section */}
       <motion.div
         className="bg-card rounded-xl overflow-hidden border border-border shadow-sm"
         initial={{ opacity: 0, y: 20 }}
