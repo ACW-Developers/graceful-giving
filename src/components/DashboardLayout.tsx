@@ -3,6 +3,7 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { Outlet } from "react-router-dom";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useAuth } from "@/hooks/useAuth";
+import { usePageTracker } from "@/hooks/usePageTracker";
 import { Link } from "react-router-dom";
 import { LogIn, LogOut, Heart } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -10,6 +11,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 const DashboardLayout = () => {
   const { isAdmin, user, signOut } = useAuth();
   const isMobile = useIsMobile();
+  usePageTracker();
 
   return (
     <SidebarProvider defaultOpen={!isMobile}>
@@ -48,7 +50,6 @@ const DashboardLayout = () => {
           <main className="flex-1 overflow-auto">
             <Outlet />
           </main>
-          {/* Footer */}
           <footer className="border-t border-border bg-card px-4 py-4">
             <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-body text-muted-foreground">
               <span>© {new Date().getFullYear()} Unashamed Charity Organization. All rights reserved.</span>
