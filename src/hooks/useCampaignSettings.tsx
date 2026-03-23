@@ -12,8 +12,8 @@ export interface CampaignData {
 const defaultCampaign: CampaignData = {
   id: "",
   goal_amount: 20000,
-  raised_amount: 4250,
-  donors_count: 127,
+  raised_amount: 0,
+  donors_count: 0,
   days_left: 42,
 };
 

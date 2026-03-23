@@ -15,7 +15,7 @@ export default {
     extend: {
       fontFamily: {
         display: ["Playfair Display", "Georgia", "serif"],
-        body: ["Inter", "system-ui", "sans-serif"],
+        body: ["DM Sans", "system-ui", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -24,6 +24,9 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         surface: "hsl(var(--surface))",
+        "chart-blue": "hsl(var(--chart-blue))",
+        "chart-green": "hsl(var(--chart-green))",
+        "chart-yellow": "hsl(var(--chart-yellow))",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
@@ -84,10 +87,6 @@ export default {
         "fade-in": {
           from: { opacity: "0" },
           to: { opacity: "1" },
-        },
-        "counter": {
-          from: { "--num": "0" },
-          to: { "--num": "5000" },
         },
       },
       animation: {

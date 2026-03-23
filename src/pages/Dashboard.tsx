@@ -3,6 +3,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Heart, Users, MapPin, Target, TrendingUp, ArrowRight, RefreshCw } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useCampaignSettings } from "@/hooks/useCampaignSettings";
+import {
+  PieChart, Pie, Cell, ResponsiveContainer, Tooltip,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid,
+} from "recharts";
 import futuresLogo from "@/assets/5000-futures-logo.png";
 import logo from "@/assets/logo.png";
 import heroImage from "@/assets/hero-charity.jpg";
@@ -14,6 +18,13 @@ const logos = [
   { src: futuresLogo, alt: "5000 Futures" },
   { src: logo, alt: "Unashamed Charity" },
 ];
+
+const COLORS = {
+  blue: "#333797",
+  green: "#44b752",
+  yellow: "#fddf76",
+  muted: "#e2e8f0",
+};
 
 const Dashboard = () => {
   const { campaign, loading, refetch } = useCampaignSettings();
@@ -39,6 +50,17 @@ const Dashboard = () => {
   const avgDonation = campaign.donors_count > 0
     ? Math.round(campaign.raised_amount / campaign.donors_count)
     : 0;
+
+  const pieData = [
+    { name: "Raised", value: campaign.raised_amount },
+    { name: "Remaining", value: Math.max(0, campaign.goal_amount - campaign.raised_amount) },
+  ];
+
+  const barData = [
+    { name: "Goal", value: campaign.goal_amount, fill: COLORS.blue },
+    { name: "Raised", value: campaign.raised_amount, fill: COLORS.green },
+    { name: "Avg×Donors", value: avgDonation * campaign.donors_count, fill: COLORS.yellow },
+  ];
 
   const quickStats = [
     { label: "Refugees to Empower", value: "5,000", icon: Users, color: "bg-primary/10 text-primary" },
@@ -112,8 +134,9 @@ const Dashboard = () => {
         ))}
       </div>
 
-      {/* Two Column: Campaign Progress + Impact */}
+      {/* Campaign Progress Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+        {/* Donut Chart */}
         <motion.div
           className="bg-card rounded-xl p-5 sm:p-6 border border-border shadow-sm"
           initial={{ opacity: 0, y: 20 }}
@@ -130,41 +153,67 @@ const Dashboard = () => {
               <RefreshCw className={`w-4 h-4 text-muted-foreground ${refreshing ? "animate-spin" : ""}`} />
             </button>
           </div>
-          <div className="space-y-4">
-            <div>
-              <div className="flex justify-between font-body text-sm mb-2">
-                <span className="text-muted-foreground">Raised so far</span>
-                <span className="font-semibold text-foreground">
-                  ${campaign.raised_amount.toLocaleString()} / ${campaign.goal_amount.toLocaleString()}
-                </span>
+          <div className="flex items-center gap-6">
+            <div className="w-40 h-40 sm:w-48 sm:h-48">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={pieData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius="60%"
+                    outerRadius="85%"
+                    paddingAngle={3}
+                    dataKey="value"
+                    strokeWidth={0}
+                  >
+                    <Cell fill={COLORS.green} />
+                    <Cell fill={COLORS.muted} />
+                  </Pie>
+                  <Tooltip formatter={(value: number) => `$${value.toLocaleString()}`} />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="flex-1 space-y-3">
+              <div>
+                <p className="font-body text-xs text-muted-foreground">Raised</p>
+                <p className="font-display text-2xl font-bold" style={{ color: COLORS.green }}>
+                  ${campaign.raised_amount.toLocaleString()}
+                </p>
               </div>
-              <div className="h-3 rounded-full bg-muted overflow-hidden">
+              <div>
+                <p className="font-body text-xs text-muted-foreground">Goal</p>
+                <p className="font-display text-lg font-bold text-foreground">${campaign.goal_amount.toLocaleString()}</p>
+              </div>
+              <div className="h-2 rounded-full bg-muted overflow-hidden">
                 <motion.div
-                  className="h-full rounded-full bg-gradient-to-r from-secondary to-secondary/70"
+                  className="h-full rounded-full"
+                  style={{ backgroundColor: COLORS.green }}
                   initial={{ width: 0 }}
                   animate={{ width: `${Math.min(percentage, 100)}%` }}
-                  transition={{ duration: 1.5, delay: 0.8, ease: "easeOut" }}
+                  transition={{ duration: 1.5, delay: 0.8 }}
                 />
               </div>
-              <p className="font-body text-xs text-muted-foreground mt-1.5">{percentage}% of goal reached</p>
+              <p className="font-body text-xs text-muted-foreground">{percentage}% of goal</p>
             </div>
-            <div className="grid grid-cols-3 gap-2 sm:gap-3 pt-2">
-              <div className="text-center p-2 sm:p-3 rounded-lg bg-background">
-                <div className="font-display text-base sm:text-lg font-bold text-foreground">{campaign.donors_count}</div>
-                <p className="font-body text-[10px] text-muted-foreground">Donors</p>
-              </div>
-              <div className="text-center p-2 sm:p-3 rounded-lg bg-background">
-                <div className="font-display text-base sm:text-lg font-bold text-foreground">${avgDonation}</div>
-                <p className="font-body text-[10px] text-muted-foreground">Avg Donation</p>
-              </div>
-              <div className="text-center p-2 sm:p-3 rounded-lg bg-background">
-                <div className="font-display text-base sm:text-lg font-bold text-foreground">{campaign.days_left}</div>
-                <p className="font-body text-[10px] text-muted-foreground">Days Left</p>
-              </div>
+          </div>
+          <div className="grid grid-cols-3 gap-2 sm:gap-3 pt-4 mt-4 border-t border-border">
+            <div className="text-center p-2 sm:p-3 rounded-lg bg-background">
+              <div className="font-display text-base sm:text-lg font-bold text-foreground">{campaign.donors_count}</div>
+              <p className="font-body text-[10px] text-muted-foreground">Donors</p>
+            </div>
+            <div className="text-center p-2 sm:p-3 rounded-lg bg-background">
+              <div className="font-display text-base sm:text-lg font-bold text-foreground">${avgDonation}</div>
+              <p className="font-body text-[10px] text-muted-foreground">Avg Donation</p>
+            </div>
+            <div className="text-center p-2 sm:p-3 rounded-lg bg-background">
+              <div className="font-display text-base sm:text-lg font-bold text-foreground">{campaign.days_left}</div>
+              <p className="font-body text-[10px] text-muted-foreground">Days Left</p>
             </div>
           </div>
         </motion.div>
 
+        {/* Bar Chart + Impact Areas */}
         <motion.div
           className="bg-card rounded-xl p-5 sm:p-6 border border-border shadow-sm"
           initial={{ opacity: 0, y: 20 }}
@@ -172,10 +221,25 @@ const Dashboard = () => {
           transition={{ duration: 0.5, delay: 0.6 }}
         >
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-display text-lg font-bold text-foreground">Impact Areas</h2>
+            <h2 className="font-display text-lg font-bold text-foreground">Fundraising Overview</h2>
             <Link to="/impact" className="font-body text-xs text-secondary hover:underline flex items-center gap-1">
-              View All <ArrowRight className="w-3 h-3" />
+              Impact <ArrowRight className="w-3 h-3" />
             </Link>
+          </div>
+          <div className="h-44 mb-4">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={barData} barCategoryGap="25%">
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+                <XAxis dataKey="name" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
+                <YAxis tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" tickFormatter={(v) => `$${(v/1000).toFixed(0)}k`} />
+                <Tooltip formatter={(value: number) => `$${value.toLocaleString()}`} />
+                <Bar dataKey="value" radius={[6, 6, 0, 0]}>
+                  {barData.map((entry, idx) => (
+                    <Cell key={idx} fill={entry.fill} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
           </div>
           <div className="grid grid-cols-2 gap-3">
             {[

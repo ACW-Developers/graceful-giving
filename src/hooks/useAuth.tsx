@@ -65,6 +65,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
     setSession(null);
     setIsAdmin(false);
+    // Clear all caches
+    localStorage.clear();
+    sessionStorage.clear();
+    window.location.href = "/";
   };
 
   return (

@@ -32,6 +32,8 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <Routes>
+              {/* Admin login is standalone - no sidebar/navbar */}
+              <Route path="/admin/login" element={<AdminLogin />} />
               <Route element={<DashboardLayout />}>
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/donate" element={<DonatePage />} />
@@ -39,7 +41,6 @@ const App = () => (
                 <Route path="/impact" element={<ImpactPage />} />
                 <Route path="/about" element={<AboutPage />} />
                 <Route path="/contact" element={<ContactPage />} />
-                <Route path="/admin/login" element={<AdminLogin />} />
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/admin/donations" element={<AdminDonations />} />
                 <Route path="/admin/campaign" element={<AdminCampaign />} />
