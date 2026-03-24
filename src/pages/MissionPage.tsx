@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MapPin, Calendar, Target, Heart, Globe, Users, ChevronLeft, ChevronRight } from "lucide-react";
-import heroImage from "@/assets/hero-charity.jpg";
 import impactEducation from "@/assets/impact-education.jpg";
 import impactFood from "@/assets/impact-food.jpg";
 import impactSkills from "@/assets/impact-skills.jpg";
@@ -9,7 +8,6 @@ import impactLanguage from "@/assets/impact-language.jpg";
 import davidImage from "@/assets/david-irihose.jpg";
 
 const images = [
-  { src: heroImage, alt: "Charity work" },
   { src: impactEducation, alt: "Education programs" },
   { src: impactFood, alt: "Food distribution" },
   { src: impactSkills, alt: "Skills training" },
