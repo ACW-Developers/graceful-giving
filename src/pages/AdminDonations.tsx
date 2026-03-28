@@ -210,6 +210,7 @@ const AdminDonations = () => {
                 <th className="text-left px-4 py-3 font-body text-xs font-semibold text-muted-foreground">Amount</th>
                 <th className="text-left px-4 py-3 font-body text-xs font-semibold text-muted-foreground">Date</th>
                 <th className="text-left px-4 py-3 font-body text-xs font-semibold text-muted-foreground">Status</th>
+                <th className="text-right px-4 py-3 font-body text-xs font-semibold text-muted-foreground">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -224,11 +225,21 @@ const AdminDonations = () => {
                       {d.status}
                     </span>
                   </td>
+                  <td className="px-4 py-3 text-right">
+                    <button
+                      onClick={() => handleDeleteDonation(d)}
+                      className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-body font-medium text-destructive hover:bg-destructive/10 transition-colors"
+                      title="Delete this donation"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      Delete
+                    </button>
+                  </td>
                 </tr>
               ))}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="text-center py-8 font-body text-sm text-muted-foreground">No donations found.</td>
+                  <td colSpan={6} className="text-center py-8 font-body text-sm text-muted-foreground">No donations found.</td>
                 </tr>
               )}
             </tbody>
