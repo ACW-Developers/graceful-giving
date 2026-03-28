@@ -41,8 +41,8 @@ const ContactPage = () => {
             <Phone className="w-5 h-5 text-accent-foreground" />
           </div>
           <h3 className="font-body font-semibold text-foreground text-sm mb-1">Phone</h3>
-          <a href="tel:+254718826305" className="font-body text-sm text-primary hover:underline">
-            (+254) 718 826 305
+          <a href="tel:+15207361677" className="font-body text-sm text-primary hover:underline">
+            +1 (520) 736-1677
           </a>
         </motion.div>
 
