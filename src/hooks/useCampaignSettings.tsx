@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 export interface CampaignData {
@@ -21,8 +21,7 @@ export function useCampaignSettings() {
   const [campaign, setCampaign] = useState<CampaignData>(defaultCampaign);
   const [loading, setLoading] = useState(true);
 
-  const fetchCampaign = useCallback(async () => {
-    setLoading(true);
+  const fetchCampaign = async () => {
     const { data, error } = await supabase
       .from("campaign_settings")
       .select("*")
@@ -32,21 +31,11 @@ export function useCampaignSettings() {
       setCampaign(data);
     }
     setLoading(false);
-  }, []);
+  };
 
   useEffect(() => {
     fetchCampaign();
-
-    // Realtime: auto-update when campaign_settings changes
-    const channel = supabase
-      .channel("campaign-settings-realtime")
-      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "campaign_settings" }, (payload) => {
-        setCampaign(payload.new as CampaignData);
-      })
-      .subscribe();
-
-    return () => { supabase.removeChannel(channel); };
-  }, [fetchCampaign]);
+  }, []);
 
   return { campaign, loading, refetch: fetchCampaign };
 }
