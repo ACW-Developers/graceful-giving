@@ -66,6 +66,42 @@ const AdminDonations = () => {
     }
   };
 
+  const handleDeleteDonation = async (donation: any) => {
+    if (!confirm(`Delete donation of $${Number(donation.amount).toLocaleString()} from ${donation.donor_name}?`)) return;
+    try {
+      const { error } = await supabase.from("donations").delete().eq("id", donation.id);
+      if (error) throw error;
+
+      // Update campaign settings: decrement raised_amount and donors_count
+      const { data: campaign } = await supabase
+        .from("campaign_settings")
+        .select("id, raised_amount, donors_count")
+        .limit(1)
+        .maybeSingle();
+
+      if (campaign) {
+        await supabase
+          .from("campaign_settings")
+          .update({
+            raised_amount: Math.max(0, Number(campaign.raised_amount) - Number(donation.amount)),
+            donors_count: Math.max(0, campaign.donors_count - 1),
+          })
+          .eq("id", campaign.id);
+      }
+
+      // Log the action
+      await supabase.from("activity_logs").insert({
+        action: "Donation Deleted",
+        description: `Deleted $${Number(donation.amount).toLocaleString()} donation from ${donation.donor_name}`,
+      });
+
+      setDonations((prev) => prev.filter((d) => d.id !== donation.id));
+      toast.success("Donation deleted and stats updated.");
+    } catch (err: any) {
+      toast.error(err.message || "Failed to delete donation.");
+    }
+  };
+
   if (authLoading) return null;
   if (!isAdmin) return <Navigate to="/admin/login" replace />;
 
