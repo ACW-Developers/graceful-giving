@@ -66,6 +66,42 @@ const AdminDonations = () => {
     }
   };
 
+  const handleDeleteDonation = async (donation: any) => {
+    if (!confirm(`Delete donation of $${Number(donation.amount).toLocaleString()} from ${donation.donor_name}?`)) return;
+    try {
+      const { error } = await supabase.from("donations").delete().eq("id", donation.id);
+      if (error) throw error;
+
+      // Update campaign settings: decrement raised_amount and donors_count
+      const { data: campaign } = await supabase
+        .from("campaign_settings")
+        .select("id, raised_amount, donors_count")
+        .limit(1)
+        .maybeSingle();
+
+      if (campaign) {
+        await supabase
+          .from("campaign_settings")
+          .update({
+            raised_amount: Math.max(0, Number(campaign.raised_amount) - Number(donation.amount)),
+            donors_count: Math.max(0, campaign.donors_count - 1),
+          })
+          .eq("id", campaign.id);
+      }
+
+      // Log the action
+      await supabase.from("activity_logs").insert({
+        action: "Donation Deleted",
+        description: `Deleted $${Number(donation.amount).toLocaleString()} donation from ${donation.donor_name}`,
+      });
+
+      setDonations((prev) => prev.filter((d) => d.id !== donation.id));
+      toast.success("Donation deleted and stats updated.");
+    } catch (err: any) {
+      toast.error(err.message || "Failed to delete donation.");
+    }
+  };
+
   if (authLoading) return null;
   if (!isAdmin) return <Navigate to="/admin/login" replace />;
 
@@ -174,6 +210,7 @@ const AdminDonations = () => {
                 <th className="text-left px-4 py-3 font-body text-xs font-semibold text-muted-foreground">Amount</th>
                 <th className="text-left px-4 py-3 font-body text-xs font-semibold text-muted-foreground">Date</th>
                 <th className="text-left px-4 py-3 font-body text-xs font-semibold text-muted-foreground">Status</th>
+                <th className="text-right px-4 py-3 font-body text-xs font-semibold text-muted-foreground">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -188,11 +225,21 @@ const AdminDonations = () => {
                       {d.status}
                     </span>
                   </td>
+                  <td className="px-4 py-3 text-right">
+                    <button
+                      onClick={() => handleDeleteDonation(d)}
+                      className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-body font-medium text-destructive hover:bg-destructive/10 transition-colors"
+                      title="Delete this donation"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      Delete
+                    </button>
+                  </td>
                 </tr>
               ))}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="text-center py-8 font-body text-sm text-muted-foreground">No donations found.</td>
+                  <td colSpan={6} className="text-center py-8 font-body text-sm text-muted-foreground">No donations found.</td>
                 </tr>
               )}
             </tbody>
