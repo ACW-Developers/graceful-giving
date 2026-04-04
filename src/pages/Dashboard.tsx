@@ -8,6 +8,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
 } from "recharts";
 import futuresLogo from "@/assets/5000-futures-logo.png";
+import DonationPosterSection from "@/components/DonationPosterSection";
 import logo from "@/assets/logo.png";
 import heroImage from "@/assets/hero-charity.jpg";
 import davidImage from "@/assets/david-irihose.jpg";
@@ -257,6 +258,9 @@ const Dashboard = () => {
           </div>
         </motion.div>
       </div>
+
+      {/* Donation Poster Section */}
+      <DonationPosterSection />
 
       {/* Founder Section */}
       <motion.div
