@@ -259,6 +259,9 @@ const Dashboard = () => {
         </motion.div>
       </div>
 
+      {/* Donation Poster Section */}
+      <DonationPosterSection />
+
       {/* Founder Section */}
       <motion.div
         className="bg-card rounded-xl overflow-hidden border border-border shadow-sm"
